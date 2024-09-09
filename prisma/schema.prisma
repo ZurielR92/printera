@@ -22,9 +22,13 @@ model User {
   is_active           Boolean  @default(true)
   user_id             String?
   contacts            Contact[]
+  elementValues       ElementValue[]
   created_at          DateTime @default(now())
   updated_at          DateTime @updatedAt
   deleted_at          DateTime?
+  registered_elements Element[]
+  reg_product_price   ProductPrice[]
+  reg_orders          Order[]
 }
 
 
@@ -41,4 +45,116 @@ model Contact {
   created_at          DateTime @default(now())
   updated_at          DateTime @updatedAt
   deleted_at          DateTime?
+  elements            Element[]
+  reg_orders          Order[]
+}
+
+model Element {
+  id                  String @id @default(uuid())
+  name                String
+  type                String
+  process_type        String
+  unit_measure        String
+  description         String?
+  default_cost        ElementValue? @relation("default_cost_relation", fields: [default_cost_id], references: [id])
+  default_cost_id     String? @unique
+  costs               ElementValue[]
+  is_active           Boolean @default(true)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  deleted_at          DateTime?
+  user_id             String
+  user                User @relation(fields: [user_id], references: [id])
+  contacts            Contact[]
+  reg_product_items   ProductItem[] @relation("elements_item_relation")
+  reg_order_items     Order_item[]
+}
+
+model ElementValue {
+  id                  String @id @default(uuid())
+  title               String
+  description         String?
+  amount              Decimal
+  user_id             String
+  user                User @relation(fields: [user_id], references: [id])
+  default_for_element Element? @relation("default_cost_relation")
+  element_id          String
+  element             Element @relation(fields: [element_id], references: [id])
+  is_active           Boolean @default(true)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  deleted_at          DateTime?
+}
+
+
+model Product {
+  id                  String @id @default(uuid())
+  name                String
+  description         String?
+  unit_measure        String
+  is_active           Boolean @default(true)
+  default_price       ProductPrice @relation("default_price_relation", fields: [default_price_id], references: [id])
+  default_price_id    String @unique
+  prices              ProductPrice[]
+  items               ProductItem[] @relation("items_product_relation")
+  reg_order_item      Order_item[]
+}
+
+model ProductItem {
+  id                  String @id @default(uuid())
+  quantity            Decimal @default(1)
+  width               Decimal @default(0)
+  height              Decimal @default(0)
+  product_id          String
+  product             Product @relation("items_product_relation",fields: [product_id], references: [id])
+  element_id          String
+  element             Element @relation("elements_item_relation",fields: [element_id], references: [id])
+}
+
+
+model ProductPrice {
+  id                  String @id @default(uuid())
+  title               String
+  description         String?
+  amount              Decimal
+  user_id             String
+  user                User @relation(fields: [user_id], references: [id])
+  default_for_product Product? @relation("default_price_relation")
+  product_id          String
+  product             Product @relation(fields: [product_id], references: [id])
+  is_active           Boolean @default(true)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  deleted_at          DateTime?
+
+}
+
+
+
+model Order {
+  id                  String @id @default(uuid())
+  order_number        Int @unique @default(autoincrement())
+  customer_id         String
+  customer            Contact @relation(fields: [customer_id], references: [id])
+  issue_date          DateTime @default(now())
+  delivery_date       DateTime @default(now())
+  status              String @default("Pendiente")
+  user_id             String
+  user                User @relation(fields: [user_id], references: [id])
+  created_at          DateTime @default(now())
+  updated_at          DateTime  @updatedAt
+}
+
+model Order_item {
+  id                  String @id @default(uuid())
+  type                String
+  product_id          String
+  product             Product @relation(fields: [product_id], references: [id])
+  element_id          String
+  element             Element @relation(fields: [element_id], references: [id])
+  quantity            Int
+  width               Decimal @default(0)
+  height              Decimal @default(0)
+  price               Decimal
+  status              String @default("Pendiente")
 }
