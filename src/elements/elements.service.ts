@@ -23,6 +23,7 @@ export class ElementsService {
         type:createElementDto.type,
         process_type:createElementDto.process_type,
         unit_measure:createElementDto.unit_meausure,
+        default_cost:createElementDto.default_cost || 0,
         user:{
           connect:{
             id:id
@@ -30,10 +31,23 @@ export class ElementsService {
         },
         costs: {
           create: [
-           ...createElementDto.costs.map((cost,i)=>{return { title:cost.title, amount:cost.amount, user:{connect:{id:id}}, elementId }})
+           ...createElementDto.costs.map((cost,i)=>{return { title:cost.title, amount:cost.amount, user:{connect:{id:id}}, id:i===0&&defaultCostId }})
           ]
         }
       },
+      include:{
+        user:{
+          select:{
+            name:true
+          }
+        },
+        costs:{
+          select:{
+            title:true,
+            amount:true
+          }
+        }
+      }
     })
     return savedElement
   }
