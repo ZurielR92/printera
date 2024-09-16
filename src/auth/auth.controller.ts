@@ -14,14 +14,6 @@ export class AuthController {
     private readonly authService: AuthService,
   ) {}
 
-  
-  @Post('register')
-  @UsePipes(new ValidationPipe())
-  @ApiOperation({ description: 'Registrar un nuevo Usuario' })
-  register(@Body() registerUserDto: RegisterUserDto) {
-    return this.authService.registerUser(registerUserDto);
-  }
-
   @Post('login')
   @UsePipes( new ValidationPipe() )
   @ApiOperation({ summary: 'Iniciar sesión'})
@@ -30,7 +22,7 @@ export class AuthController {
   }
 
   @Get( 'profile' )
-  @Auth( roles.ADMINISTRACION )
+  @Auth( roles.ADMINISTRADOR )
   @ApiOperation({description:'Obtener el usuario actual'})
   profile (@ActiveUser() user) {
     return user

@@ -1,10 +1,6 @@
 export enum roles {
-    ADMINISTRACION = 'Administracion',
-    COORDINACION = 'Coordinacion',
-    TERMINADOS = 'Terminados',
-    TRANSPORTE = 'Transporte',
-    IMPRESION = 'Impresion',
-    INSTALACION = 'Instalacion',
-    DISENO = 'Diseño',
-    CONTABILIDAD = 'Contabilidad'
+    ADMINISTRADOR = 'Administrador',
+    COORDINADOR = 'Coordinador',
+    DISENADOR = 'Diseñador',
+    OPERARIO = 'Operario',
 }

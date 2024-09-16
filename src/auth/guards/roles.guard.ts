@@ -22,7 +22,11 @@ export class RolesGuard implements CanActivate {
     /* console.log(request.user.roles)
     console.log(roles) */
 
-
+    if(request.user.roles === 'Administrador') {
+      console.log('Permiso Administrador')
+      return true
+    }
+    
 
     return roles.every(role => request.user.roles.includes(role));
 
